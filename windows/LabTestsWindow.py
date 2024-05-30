@@ -5,7 +5,8 @@ from tkinter import Frame
 import ttkbootstrap as bs
 from ttkbootstrap import Style
 from ttkbootstrap.constants import *
-import form_windows.docDetails
+import form_windows.addTest
+
 
 class LabTestsWindow(tk.Tk):
     def __init__(self, parent,db):
@@ -22,7 +23,7 @@ class LabTestsWindow(tk.Tk):
         topframe=Frame(self.frame)
         topframe.place(x=10,y=0,width=1250,height=120)
         tk.Label(topframe, text="Manage Lab Tests", font=("Helvetica", 25, "bold")).place(x=450, y=10)
-        bs.Button(topframe, text="Add New Lab Test",command=self.addDoctor).place(x=440,y=80)
+        bs.Button(topframe, text="Add New Lab Test",command=self.addTest).place(x=440,y=80)
 
         #searchby logic
         tk.Label(topframe, text="Searchby:", font=("Helvetica", 10, "bold")).place(x=5,y=80)
@@ -102,10 +103,10 @@ class LabTestsWindow(tk.Tk):
             # Get the values of the selected row
             values = self.table.item(selected_item, 'values')
             #windows.docDetails.EditDoctors(self.db,self,values)
-    
-    def addDoctor(self):
+            form_windows.addTest.AddTest(self.db,self,values)
+    def addTest(self):
         pass
-        #windows.docDetails.EditDoctors(self.db,self)
+        form_windows.addTest.AddTest(self.db,self)
 
 if __name__ == "__main__":
     style = bs.Style("morph")

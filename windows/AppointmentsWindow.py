@@ -24,13 +24,13 @@ class AppointmentsWindow(tk.Tk):
 
         #searchby logic
         tk.Label(topframe, text="Searchby:", font=("Helvetica", 10, "bold")).place(x=5,y=80)
-        self.searchbycbox=bs.Combobox(topframe,values=['doctor_id','Name','specialization','department','contact_number'])
-        self.searchbycbox.set('Name') # set default as Name 
+        self.searchbycbox=bs.Combobox(topframe,values=['Appointment ID','Patient ID','Patient Name','Doctor ID','Doctor Name','Date'])
+        self.searchbycbox.set('Appointment ID') # set default as Name 
         self.searchbycbox.configure(state="readonly") #To not allow typing in combobox
         self.searchbycbox.place(x=90,y=80)
         self.searchby_text = tk.Text(topframe, height=1, width=25)
         self.searchby_text.place(x=260,y=80)
-        #self.searchby_text.bind("<KeyRelease>", lambda event: self.fetch_details()) #keyrelease bind to call function 
+        self.searchby_text.bind("<KeyRelease>", lambda event: self.fetch_details()) #keyrelease bind to call function 
 
     def setTable(self):
         table_frame = Frame(self.frame, bd=5, relief=RIDGE, bg='white')
@@ -87,6 +87,26 @@ class AppointmentsWindow(tk.Tk):
         # Insert data into the table
         for appointment in data:
             self.table.insert('', 'end', values=appointment)
+
+     # Called when key release in searchby
+    def fetch_details(self):
+        self.table.delete(*self.table.get_children()) #clear existing data
+        searchby=self.searchbycbox.get()
+        #mapping to convert user friendly fields to 
+        column_mapping = {
+        'Appointment ID': 'AppointmentID',
+        'Patient ID': 'PatientID',
+        'Patient Name': 'Name', 
+        'Doctor ID': 'DoctorID',
+        'Doctor Name': 'first_name',
+        'Date': 'AppointmentDate',
+        }
+        searchby = column_mapping.get(searchby)
+        value = self.searchby_text.get("1.0", "end-1c")
+        data = self.db.searchby_appointments(searchby,value)
+        for appointment in data:
+            self.table.insert('', 'end', values=appointment)
+
     
     def on_select(self, event=None):
         selection = self.table.selection()
