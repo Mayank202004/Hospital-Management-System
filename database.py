@@ -87,6 +87,16 @@ class Database:
         self.cursor.execute(f"SELECT DepartmentID,DepartmentName from Departments where {searchby} like '%{str}%'")
         data = self.cursor.fetchall()
         return data
+    
+    #used for find Tests  in add TestResult Window
+    def search_tests(self,searchby,str):
+        if searchby=="DepartmentName":
+            svar='d'
+        else:
+            svar='l'
+        self.cursor.execute(f"SELECT l.TestID,l.TestName,d.DepartmentName from LabTests l inner join Departments d on l.DepartmentID=d.DepartmentID where {svar}.{searchby} like '%{str}%'")
+        data = self.cursor.fetchall()
+        return data
 
     #used for find Doctors window in manage appointments
     def search_p(self,searchby,str):
@@ -162,7 +172,7 @@ class Database:
         if row:
             return row[0]
         else:
-            return None\
+            return None
             
     def get_doctor_name(self,id):
         self.cursor.execute(f"SELECT 'Dr. ' || first_name FROM Doctors WHERE doctor_id={id}")
@@ -193,7 +203,15 @@ class Database:
         if row:
             return row
         else:
-            return None 
+            return None
+
+    def get_test_name(self,id):
+        self.cursor.execute(f"SELECT TestName FROM LabTests WHERE TestID={id}")
+        row = self.cursor.fetchone()
+        if row:
+            return row
+        else:
+            return None  
 
     # ====================Insert to table queries==============================
     def insertPatient(self,values):
@@ -219,6 +237,10 @@ class Database:
     def insertTest(self,values):
         self.cursor.executemany("INSERT INTO LabTests (TestName, TestCost, DepartmentID) VALUES (?, ?, ?)",values)
         self.conn.commit()
+
+    def insertTestResult(self,values):
+        self.cursor.executemany("INSERT INTO LabResults (ResultID, TestID, PatientID, ResultDate, ResultDetails) VALUES (?, ?, ?, ?, ?)",values)
+        self.conn.commit()
     # ====================Update table element queries==============================
     def updatePatient(self, values, identifier):
         self.cursor.execute(f"UPDATE Patients SET Name=?, DateOfBirth=?, Gender=?, ContactNumber=?, Email=?, BloodType=?, InsuranceProvider=?, EmergencyContactName=?, EmergencyContactNumber=?, Allergies=?, MedicalHistory=? WHERE PatientID={identifier}", values)
@@ -238,6 +260,10 @@ class Database:
     
     def updateTest(self, values, identifier):
         self.cursor.execute(f"UPDATE LabTests SET TestName=?, TestsCost=?, DepartmentID=? WHERE TestID={identifier}", values)
+        self.conn.commit()
+
+    def updateTestResults(self, values, identifier):
+        self.cursor.execute(f"UPDATE LabResults SET TestID=?, PatientID=?, ResultDate=?, ResultDetails=? WHERE ResultID={identifier}", values)
         self.conn.commit()
 
     # ====================Delete table element queries==============================

@@ -102,10 +102,9 @@ class LabTestsWindow(tk.Tk):
             selected_item = selection[0]
             # Get the values of the selected row
             values = self.table.item(selected_item, 'values')
-            #windows.docDetails.EditDoctors(self.db,self,values)
             form_windows.addTest.AddTest(self.db,self,values)
+   
     def addTest(self):
-        pass
         form_windows.addTest.AddTest(self.db,self)
 
 if __name__ == "__main__":
