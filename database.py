@@ -88,6 +88,12 @@ class Database:
         data = self.cursor.fetchall()
         return data
     
+    #used for find ward in add bed Window
+    def search_wards(self,searchby,str):
+        self.cursor.execute(f"SELECT WardID, WardName, WardType from Wards where {searchby} like '%{str}%'")
+        data = self.cursor.fetchall()
+        return data
+    
     #used for find Tests  in add TestResult Window
     def search_tests(self,searchby,str):
         if searchby=="DepartmentName":
@@ -100,10 +106,13 @@ class Database:
 
     #used for find Doctors window in manage appointments
     def search_p(self,searchby,str):
-        if searchby in ['AppointmentID','PatientID','doctor_id']:
+        if searchby in ['PatientID','DoctorID']:
             svar='a'
-        else:
-            svar='m'
+
+        elif searchby in ['Name']:
+            svar='p'
+        elif searchby in ['first_name']:
+            svar='d'
         self.cursor.execute(f"SELECT a.PrescriptionID,a.DoctorID,'Dr. ' || d.first_name as doctor_name,a.PatientID,p.Name,SUM(m.Price) AS TotalPrice FROM Prescriptions a INNER JOIN Medicines m ON a.MedicineID = m.MedicineID INNER JOIN Patients p on a.PatientID=p.PatientID INNER JOIN Doctors d on a.DoctorID=d.doctor_id where {svar}.{searchby} like '%{str}%' GROUP BY a.PrescriptionID, a.PatientID, a.DoctorID")
         data = self.cursor.fetchall()
         return data
@@ -197,6 +206,13 @@ class Database:
         result = self.cursor.fetchone()
         return result[0] if result else 1
     
+    def getWardID(self):
+        #ward id to add new prescription
+        # +1 so that we get new id for new ward
+        self.cursor.execute("select max(WardID)+1 from Wards")
+        result = self.cursor.fetchone()
+        return result[0] if result else 1
+    
     def get_department_name(self,id):
         self.cursor.execute(f"SELECT DepartmentName FROM Departments WHERE DepartmentID={id}")
         row = self.cursor.fetchone()
@@ -204,6 +220,14 @@ class Database:
             return row
         else:
             return None
+        
+    def get_ward_name(self,id):
+        self.cursor.execute(f"SELECT WardName FROM Wards WHERE WardID={id}")
+        row = self.cursor.fetchone()
+        if row:
+            return row
+        else:
+            return None 
 
     def get_test_name(self,id):
         self.cursor.execute(f"SELECT TestName FROM LabTests WHERE TestID={id}")
@@ -235,12 +259,25 @@ class Database:
         self.conn.commit()
 
     def insertTest(self,values):
-        self.cursor.executemany("INSERT INTO LabTests (TestName, TestCost, DepartmentID) VALUES (?, ?, ?)",values)
+        self.cursor.execute("INSERT INTO LabTests (TestName, TestCost, DepartmentID) VALUES (?, ?, ?)",values)
         self.conn.commit()
 
     def insertTestResult(self,values):
-        self.cursor.executemany("INSERT INTO LabResults (ResultID, TestID, PatientID, ResultDate, ResultDetails) VALUES (?, ?, ?, ?, ?)",values)
+        self.cursor.execute("INSERT INTO LabResults (TestID, PatientID, ResultDate, ResultDetails) VALUES (?, ?, ?, ?)",values)
         self.conn.commit()
+
+    def insertWard(self,values):
+        self.cursor.execute("INSERT INTO Wards (WardName, WardType, Capacity) VALUES (?, ?, ?)",values)
+        self.conn.commit() 
+
+    def insertBed(self,values):
+        self.cursor.execute("INSERT INTO Beds (WardID, BedNumber, Availability, PatientID) VALUES (?, ?, ?, ?)",values)
+        self.conn.commit() 
+
+    def insertDepartment(self,values):
+        self.cursor.execute("INSERT INTO Departments (DepartmentName, HeadOfDepartment) VALUES (?, ?)",values)
+        self.conn.commit() 
+
     # ====================Update table element queries==============================
     def updatePatient(self, values, identifier):
         self.cursor.execute(f"UPDATE Patients SET Name=?, DateOfBirth=?, Gender=?, ContactNumber=?, Email=?, BloodType=?, InsuranceProvider=?, EmergencyContactName=?, EmergencyContactNumber=?, Allergies=?, MedicalHistory=? WHERE PatientID={identifier}", values)
@@ -259,11 +296,23 @@ class Database:
         self.conn.commit()
     
     def updateTest(self, values, identifier):
-        self.cursor.execute(f"UPDATE LabTests SET TestName=?, TestsCost=?, DepartmentID=? WHERE TestID={identifier}", values)
+        self.cursor.execute(f"UPDATE LabTests SET TestName=?, TestCost=?, DepartmentID=? WHERE TestID={identifier}", values)
         self.conn.commit()
 
-    def updateTestResults(self, values, identifier):
+    def updateTestResult(self, values, identifier):
         self.cursor.execute(f"UPDATE LabResults SET TestID=?, PatientID=?, ResultDate=?, ResultDetails=? WHERE ResultID={identifier}", values)
+        self.conn.commit()
+
+    def updateWard(self, values, identifier):
+        self.cursor.execute(f"UPDATE Wards SET WardName=?, WardType=?, Capacity=? WHERE WardID={identifier}", values)
+        self.conn.commit()
+
+    def updateBed(self, values, identifier):
+        self.cursor.execute(f"UPDATE Beds SET WardID=?, BedNumber=?, Availability=?, PatientID=? WHERE BedID={identifier}", values)
+        self.conn.commit()
+
+    def updateDepartment(self, values, identifier):
+        self.cursor.execute(f"UPDATE Departments SET DepartmentName=?, HeadOfDepartment=? WHERE DepartmentID={identifier}", values)
         self.conn.commit()
 
     # ====================Delete table element queries==============================
@@ -283,8 +332,24 @@ class Database:
         self.cursor.execute(f"DELETE FROM Medicines where MedicineID={identifier}")
         self.conn.commit()
 
-    def deleteMedicine(self,identifier):
+    def deleteTest(self,identifier):
         self.cursor.execute(f"DELETE FROM LabTests where TestID={identifier}")
+        self.conn.commit()
+
+    def deleteTestResult(self,identifier):
+        self.cursor.execute(f"DELETE FROM LabResults where ResultID={identifier}")
+        self.conn.commit()
+
+    def deleteWard(self,identifier):
+        self.cursor.execute(f"DELETE FROM Wards where WardID={identifier}")
+        self.conn.commit()
+
+    def deleteBed(self,identifier):
+        self.cursor.execute(f"DELETE FROM Beds where BedID={identifier}")
+        self.conn.commit()
+
+    def deleteDepartment(self,identifier):
+        self.cursor.execute(f"DELETE FROM Departments where DepartmentID={identifier}")
         self.conn.commit()
 
 

@@ -14,16 +14,16 @@ class findPrescription(tk.Tk,):
 
     def create_widgets(self):
         self.title("Find Patients")
-        self.geometry("800x500")
+        self.geometry("800x510")
         self.configure(bg="cornflowerblue")
 
-        tk.Label(self, text="Find Prescription", font=("Helvetica", 15, "bold")).place(x=220, y=10)
+        tk.Label(self, text="Find Prescription", font=("Helvetica", 20, "bold")).place(x=300, y=10)
 
         #frames setup
         frametop = tk.Frame(self,bg='green')  
-        frametop.place(x=20, y=45,width=550,height=50)
+        frametop.place(x=20, y=65,width=770,height=50)
         tableframe = tk.Frame(self,bg='black')  
-        tableframe.place(x=20, y=100,width=750,height=380)
+        tableframe.place(x=20, y=120,width=770,height=380)
 
         #searchby logic
         tk.Label(frametop, text="Searchby:", font=("Helvetica", 10, "bold")).grid(row=0, column=0, padx=5, pady=5)
@@ -72,7 +72,7 @@ class findPrescription(tk.Tk,):
         searchby=self.searchbycbox.get()
         #mapping to convert user friendly fields to 
         column_mapping = { 
-        'Doctor ID': 'doctor_id',
+        'Doctor ID': 'DoctorID',
         'Doctor Name': 'first_name',
         'Patient ID': 'PatientID',
         'Patient Name': 'Name',

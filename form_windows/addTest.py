@@ -85,9 +85,8 @@ class AddTest(tk.Tk):
         if confirmation:
             values = (
                 self.test_name_text.get("1.0", "end-1c"),
-                self.deptid_text.get("1.0", "end-1c"),
-                self.deptname_text.get("1.0", "end-1c"),
                 self.price_text.get("1.0", "end-1c"),   
+                self.deptid_text.get("1.0", "end-1c"),
       
             )
             identifier = self.test_id_text.get("1.0", "end-1c")

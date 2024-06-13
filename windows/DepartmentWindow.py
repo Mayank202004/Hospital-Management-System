@@ -5,6 +5,7 @@ from tkinter import Frame
 import ttkbootstrap as bs
 from ttkbootstrap import Style
 from ttkbootstrap.constants import *
+import form_windows.departmentDetails
 
 
 
@@ -22,7 +23,7 @@ class DepartmentWindow(tk.Tk):
         topframe=Frame(self.frame)
         topframe.place(x=10,y=0,width=1250,height=120)
         tk.Label(topframe, text="Manage Departments", font=("Helvetica", 25, "bold")).place(x=500, y=10)
-        bs.Button(topframe, text="Add New Department").place(x=440,y=80)
+        bs.Button(topframe, text="Add New Department",command=self.addDepartment).place(x=440,y=80)
 
         #searchby logic
         tk.Label(topframe, text="Searchby:", font=("Helvetica", 10, "bold")).place(x=5,y=80)
@@ -92,10 +93,14 @@ class DepartmentWindow(tk.Tk):
         for dept in data:
             self.table.insert('', 'end', values=dept)
 
+    #called when double clicked any tale row to edit 
     def on_select(self, event=None):
         selection = self.table.selection()
         if selection:
             selected_item = selection[0]
+            # Get the values of the selected row
             values = self.table.item(selected_item, 'values')
-            # Modify according to your needs
-            print("Selected item:", values)
+            form_windows.departmentDetails.AddDepartment(self.db,self,values)
+
+    def addDepartment(self):
+        form_windows.departmentDetails.AddDepartment(self.db,self)

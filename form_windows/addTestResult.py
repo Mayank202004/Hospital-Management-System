@@ -83,41 +83,41 @@ class AddTestResult(tk.Tk):
 
         try:
             self.db.insertTestResult(values)
-            messagebox.showinfo("Success", "Test information added successfully!")
+            messagebox.showinfo("Success", "Test result information added successfully!")
             self.TestResultWindow.setTable()
         except Exception as e:
-            messagebox.showerror("Error", f"Failed to add test information: {str(e)}")
+            messagebox.showerror("Error", f"Failed to add test result information: {str(e)}")
         self.destroy()
 
     def update(self):
-        confirmation = messagebox.askyesno("Confirm Update", "Are you sure you want to update this test's information?")
+        confirmation = messagebox.askyesno("Confirm Update", "Are you sure you want to update this test result's information?")
         if confirmation:
             values = (
-                self.test_name_text.get("1.0", "end-1c"),
-                self.deptid_text.get("1.0", "end-1c"),
-                self.deptname_text.get("1.0", "end-1c"),
-                self.price_text.get("1.0", "end-1c"),   
+                self.test_id_text.get("1.0", "end-1c"),
+                self.patient_id_text.get("1.0", "end-1c"),
+                self.result_date_text.get("1.0", "end-1c"),
+                self.result_details_text.get("1.0", "end-1c"),   
       
             )
-            identifier = self.test_id_text.get("1.0", "end-1c")
+            identifier = self.result_id_text.get("1.0", "end-1c")
             try:
                 self.db.updateTestResult(values, identifier)
-                messagebox.showinfo("Success", "Test information updated successfully!")
+                messagebox.showinfo("Success", "Test result information updated successfully!")
                 self.TestResultWindow.setTable()
             except Exception as e:
-                messagebox.showerror("Error", f"Failed to update test information: {str(e)}")
+                messagebox.showerror("Error", f"Failed to update test result information: {str(e)}")
             self.destroy()
 
     def delete(self):
-        confirmation = messagebox.askyesno("Confirm Delete", "Are you sure you want to delete this Tests's information?")
+        confirmation = messagebox.askyesno("Confirm Delete", "Are you sure you want to delete this Tests result's information?")
         if confirmation:
-            identifier = self.test_id_text.get("1.0", "end-1c")
+            identifier = self.result_id_text.get("1.0", "end-1c")
             try:
                 self.db.deleteTestResult(identifier)
-                messagebox.showinfo("Success", "Test information deleted successfully!")
+                messagebox.showinfo("Success", "Test result information deleted successfully!")
                 self.TestResultWindow.setTable()
             except Exception as e:
-                messagebox.showerror("Error", f"Failed to delete test information: {str(e)}")
+                messagebox.showerror("Error", f"Failed to delete test result information: {str(e)}")
             self.destroy()
 
     def clear(self):

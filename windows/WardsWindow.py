@@ -5,6 +5,7 @@ from tkinter import Frame
 import ttkbootstrap as bs
 from ttkbootstrap import Style
 from ttkbootstrap.constants import *
+import form_windows.wardDetails
 
 
 
@@ -22,7 +23,7 @@ class WardsWindow(tk.Tk):
         topframe=Frame(self.frame)
         topframe.place(x=10,y=0,width=1250,height=120)
         tk.Label(topframe, text="Manage Wards", font=("Helvetica", 25, "bold")).place(x=500, y=10)
-        bs.Button(topframe, text="Add New Ward").place(x=440,y=80)
+        bs.Button(topframe, text="Add New Ward",command=self.addWard).place(x=440,y=80)
 
         #searchby logic
         tk.Label(topframe, text="Searchby:", font=("Helvetica", 10, "bold")).place(x=5,y=80)
@@ -98,7 +99,10 @@ class WardsWindow(tk.Tk):
         selection = self.table.selection()
         if selection:
             selected_item = selection[0]
+            # Get the values of the selected row
             values = self.table.item(selected_item, 'values')
-            # Modify according to your needs
-            print("Selected item:", values)
+            form_windows.wardDetails.AddWard(self.db,self,values)
+
+    def addWard(self):
+        form_windows.wardDetails.AddWard(self.db,self)
 
