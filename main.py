@@ -16,17 +16,24 @@ from windows.LabResultsWindow import LabResultsWindow
 from windows.PrescriptionWindow import PrescriptionsWindow
 #import windows.docDetails
 
-#from windows.login_window import LoginWindow
+from windows.login_window import LoginWindow
 
 class HospitalManagementApp:
     def __init__(self, root):
         self.root = root
+        self.db = Database("hospital.db")
+        self.show_login()
+
+    def show_login(self):
+        login_window = tk.Toplevel(self.root)
+        login_app = LoginWindow(login_window, self,self.db)
+        self.root.wait_window(login_window)
+
+    def start_dashboard(self):
+        self.root.deiconify()
         self.root.title("Hospital Management System")
         self.root.attributes("-fullscreen", True)
-        #self.root.geometry("1920x1080")
-        self.db = Database("hospital.db")
         self.create_dashboard()
-        #self.show_login_window()
 
     def create_dashboard(self):
    

@@ -86,6 +86,8 @@ class PrescriptionsWindow(tk.Tk):
     def FetchPrescription(self):
         try:
             if(self.ID_input_text.get("1.0","end-1c").strip()!=""):
+                for item in self.table.get_children():
+                    self.table.delete(item)
                 id=self.ID_input_text.get("1.0", "end-1c")
                 data = self.db.fetch_prescription_data(id)
                 for prescription in data:
@@ -99,6 +101,8 @@ class PrescriptionsWindow(tk.Tk):
 
     def FetchPrescription_throughfind(self,id):
         try:
+            for item in self.table.get_children():
+                self.table.delete(item)
             data = self.db.fetch_prescription_data(id)
             for prescription in data:
                 self.table.insert('', 'end', values=prescription)

@@ -353,6 +353,18 @@ class Database:
         self.conn.commit()
 
 
+    #================= Login Logic =========================================
+    
+    def verify_user(self,username,password):
+        self.cursor.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password))
+        result = self.cursor.fetchone()
+        # If result is not None, the user is verified
+        if result:
+            return True
+        else:
+            return False
+
+
 
 
 
