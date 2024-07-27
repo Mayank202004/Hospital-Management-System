@@ -22,6 +22,7 @@ class HospitalManagementApp:
     def __init__(self, root):
         self.root = root
         self.db = Database("hospital.db")
+        self.root.withdraw() #Bug fixed (Where extra Tk window used to show at login)
         self.show_login()
 
     def show_login(self):
